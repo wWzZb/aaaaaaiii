@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 工具网站</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background-color: #fff;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        padding-left: 10vw;
+        padding-right: 10vw;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .header .contact {
+        display: flex;
+        align-items: center;
+        font-size: 23px;
+        margin-right: 90px;
+        gap: 10px;
+        position: relative;
+      }
+      .floating-card {
+        position: absolute; /* 绝对定位 */
+        top: 100%; /* 卡片位于图像下方 */
+        left: 50%; /* 水平居中 */
+        transform: translateX(-50%) translateY(10px); /* 初始状态下向上偏移 */
+        width: 200px; /* 卡片宽度 */
+        background-color: white; /* 背景颜色 */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* 阴影效果 */
+        border-radius: 8px; /* 圆角效果 */
+        padding: 10px; /* 内边距 */
+        visibility: hidden; /* 初始隐藏卡片 */
+        opacity: 0; /* 初始透明度 */
+        transition: opacity 0.1s ease, transform 0.3s ease; /* 过渡效果 */
+        z-index: 10; /* 提高层级以覆盖其他元素 */
+      }
+      .contact:hover .floating-card {
+        visibility: visible;
+        opacity: 1; /* 透明度设为1 */
+        transform: translateX(-50%) translateY(0); /* 位置恢复 */
+      }
+      .floating-card-header {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 1vw 1vw 1vw 1vw;
+        border-bottom: #666 solid 1px;
+      }
+      .youjiantubiao {
+        width: 38px;
+        border-right: #666 solid 2px;
+
+        padding-right: 13px;
+      }
+      .zixunxingxi {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+      }
+
+      .floating-card-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 1vw 1vw 1vw 1vw;
+        border-bottom: #666 solid 1px;
+      }
+      .shangwuhezuo-tel {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+      }
+      .main {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+        padding-left: 10vw;
+        padding-right: 10vw;
+      }
+
+      .main .showcase {
+        flex: 3;
+        background-color: #d3d3d3;
+        height: 380px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        color: #666;
+        margin-right: 20px;
+      }
+      .main .showcase img {
+        height: 42px;
+      }
+
+      .main .sidebar {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .sidebar .toolbox {
+        background-color: #d3d3d3;
+        height: 140px;
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .sidebar .toolbox p {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .sidebar .toolbox-icons {
+        display: flex;
+        gap: 10px;
+        justify-content: space-around;
+      }
+
+      .sidebar .toolbox-icons div {
+        background-color: #fff;
+        height: 60px;
+        width: 60px;
+        border-radius: 8px;
+      }
+
+      .research-updates {
+        padding: 20px;
+        padding-left: 10vw;
+        padding-right: 10vw;
+      }
+
+      .research-updates h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .updates {
+        display: flex;
+        gap: 20px;
+        max-height: 120px;
+      }
+
+      .update-card {
+        flex: 1;
+        max-height: 120px;
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: flex 0.3s ease-in-out; /* 让盒子的宽度变化具有过渡效果 */
+        overflow: hidden;
+      }
+
+      .update-card:hover {
+        flex: 2; /* 悬停时盒子占据更大的比例，"挤压"旁边的元素 */
+      }
+      .line {
+        width: 30%;
+        height: 3px;
+        background-color: #080808;
+        transition: transform 0.3s ease;
+        transform-origin: left;
+      }
+      .update-card:hover .line {
+        transform: scaleX(1.9);
+      }
+
+      .image-container img {
+        transition: filter 0.3s ease;
+      }
+
+      .image-container img:hover {
+        filter: brightness(50%) sepia(100%) hue-rotate(180deg);
+      }
+      .chakan-annui {
+        color: black;
+        font-weight: 510;
+      }
+      .cards-section {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 20px;
+        background-color: #f2f2f2;
+      }
+      .chakan-annui {
+        text-decoration: none; /* 去掉默认的下划线 */
+        cursor: pointer; /* 鼠标悬停时显示手型光标 */
+        position: relative; /* 为了定位下方的横线 */
+      }
+
+      .chakan-annui::after {
+        content: ""; /* 生成一个伪元素 */
+        position: absolute;
+        left: -50px;
+        right: -50px;
+        bottom: -20px; /* 横线与文本有一点距离 */
+        height: 2px; /* 横线的厚度 */
+        background-color: black; /* 横线的颜色 */
+        transform: scaleX(0); /* 初始时横线不可见 */
+        transition: transform 0.3s ease-in-out; /* 使横线出现时有过渡效果 */
+      }
+      .chakan-annui.active::after {
+        transform: scaleX(1);
+      }
+
+      .chakan-annui:hover::after {
+        transform: scaleX(1); /* 鼠标悬停时横线从0变成1，即横线展开 */
+      }
+
+      .showcase-iframe {
+        width: 90%;
+        height: calc(9vh + 380px);
+      }
+
+      .main-menu {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        font-size: 23px;
+        padding-top: 50px;
+        padding-left: 10vw;
+        padding-right: 10vw;
+        background-color: #f2f2f2;
+      }
+
+      .xueshengzuoping_part {
+        padding: 20px;
+        padding-bottom: 50px;
+        padding-top: 39px;
+        padding-left: 10vw;
+        padding-right: 10vw;
+      }
+      .xueshengzuoping_header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fff;
+      }
+      .xueshengzuoping_title {
+        padding-bottom: 10px;
+        font-size: 20px;
+      }
+      .xueshengzuoping {
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .chakangengduo-annui {
+        padding-right: 60px;
+        font-size: 12px;
+      }
+      .chakangengduo-annui-2 {
+        text-decoration: none;
+        color: #868585;
+      }
+      .chakangengduo-annui-2:hover {
+        text-decoration: underline;
+      }
+      .background-picture {
+        position: relative;
+      }
+      .xueshengzuoping_title_picture {
+        position: absolute;
+        right: -33px; /* 将图片向右移动，确保不与文字重叠 */
+        top: 50%; /* 将图片垂直居中对齐 */
+        transform: translateY(-59%); /* 将图片的垂直偏移调整到中间 */
+        opacity: 0.8; /* 设置图片的透明度 */
+        width: 50px; /* 控制图片的大小 */
+        height: auto; /* 让高度根据宽度自动调整 */
+        pointer-events: none; /* 防止图片阻挡标题的点击 */
+      }
+      .xueshengzuoping-cards {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        border-top: #666 solid 1px;
+        padding-left: 10vw;
+        padding-right: 10vw;
+      }
+      .footer-mail-picture {
+        height: 38px;
+        width: 39px;
+        border: 1px solid rgb(214, 218, 213);
+        border-radius: 27px;
+      }
+      .lianxifangshi {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .friend-links {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .youqinglianjie {
+        font-weight: bold;
+        font-size: 20px;
+      }
+      .friend-links-list {
+        display: flex;
+        justify-content: baseline;
+        font-size: 17px;
+        gap: 10px;
+      }
+      .friend-links-annui {
+        text-decoration: none;
+        color: #868585;
+      }
+      .friend-links-annui:hover {
+        text-decoration: underline;
+      }
+    </style>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll(".chakan-annui");
+
+        buttons.forEach((button) => {
+          button.addEventListener("click", function (event) {
+            buttons.forEach((btn) => btn.classList.remove("active"));
+            this.classList.add("active");
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <!-- Header -->
+    <div class="header">
+      <img src="images/微信截图_20240914121358.png" alt="Logo" />
+      <div class="contact">
+        <img class="youjiantubiao" src="images/邮件.svg" alt="Contact Icon" />
+        <div class="floating-card">
+          <div class="floating-card-header">
+            <span style="font-size: small; padding-bottom: 12%">咨询热线</span>
+            <div class="zixunxingxi">
+              <img
+                class="dianhuatubiao"
+                src="images/电话.svg"
+                style="width: 33px"
+              />
+              <span style="font-weight: bold; font-size: 70%"
+                >400-888-8888</span
+              >
+            </div>
+          </div>
+          <div class="floating-card-content">
+            <span style="font-size: small; padding-bottom: 12%">商务合作</span>
+            <div class="shangwuhezuo-tel">
+              <img
+                class="youjiantubiao-2"
+                src="images/邮箱.svg"
+                style="width: 33px"
+              />
+              <span style="font-weight: bold; font-size: 70%">XXX@XX.com</span>
+            </div>
+          </div>
+          <div class="flaoting-card-footer">
+            <span style="font-size: small; padding-bottom: 12%"
+              >微信扫码，添加 <strong>专属客服</strong></span
+            >
+            <img
+              class="wechat-qrcode"
+              src="images/二维码.svg"
+              alt="微信二维码"
+              style="width: 35%"
+            />
+          </div>
+        </div>
+        <span style="font-weight: 39vw">联系我们</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <!-- Showcase Area -->
+      <div class="showcase">
+        <img href="images/微信截图_20240914122429.png" alt="Showcase Image" />
+      </div>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Toolbox Section 1 -->
+        <div class="toolbox">
+          <p>AI 工具箱</p>
+          <div class="toolbox-icons">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+
+        <!-- Toolbox Section 2 -->
+        <div class="toolbox">
+          <p>AI 工具箱</p>
+          <p>查看更多 >></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Research Updates -->
+    <div class="research-updates">
+      <h2>科研动态</h2>
+      <div class="updates">
+        <div class="update-card">
+          <span style="color: black; font-weight: bolder"
+            >人工智能研究院朱毅鑫课题组及合作者在灵巧化操作方面取得进展</span
+          >
+          <div class="line"></div>
+          <div style="font-size: 60%; color: black; font-weight: bold">
+            2024.08
+          </div>
+
+          <div style="color: #999; font-size: 60%">
+            人类与环境的交互以手作为媒介来完成，通过手进行各种操作对我们来说习以为常且必不可少。机器人和环境的交互的媒介是末端执行器（End
+            Effector）——它可以是一个夹子、一个吸盘，也可以和人类一样，是一双灵巧手（Dexterous
+            Hand）…
+          </div>
+        </div>
+        <div class="update-card">
+          <span style="color: black; font-weight: bolder"
+            >人工智能研究院朱毅鑫课题组及合作者在灵巧化操作方面取得进展</span
+          >
+          <div class="line"></div>
+          <div style="font-size: 60%; color: black; font-weight: bold">
+            2024.08
+          </div>
+
+          <div style="color: #999; font-size: 60%">
+            人类与环境的交互以手作为媒介来完成，通过手进行各种操作对我们来说习以为常且必不可少。机器人和环境的交互的媒介是末端执行器（End
+            Effector）——它可以是一个夹子、一个吸盘，也可以和人类一样，是一双灵巧手（Dexterous
+            Hand）…
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-menu">
+      <a
+        href="https://www.bilibili.com/"
+        target="iframe_a"
+        rel="noopener"
+        class="chakan-annui"
+        >3D数字人</a
+      >
+      <a
+        href="https://www.runoob.com"
+        target="iframe_a"
+        rel="noopener"
+        class="chakan-annui"
+        >2.5D浮雕</a
+      >
+      <a
+        href="https://www.runoob.com"
+        target="iframe_a"
+        rel="noopener"
+        class="chakan-annui"
+        >教学助手</a
+      >
+      <a
+        href="https://www.runoob.com"
+        target="iframe_a"
+        rel="noopener"
+        class="chakan-annui"
+        >实景衍生</a
+      >
+      <a
+        href="https://www.runoob.com"
+        target="iframe_a"
+        rel="noopener"
+        class="chakan-annui"
+        >声音工坊</a
+      >
+    </div>
+    <div class="cards-section">
+      <iframe
+        class="showcase-iframe"
+        name="iframe_a"
+        src="https://www.runoob.com/html/html-iframes.html"
+        frameborder="0"
+        scrolling="no"
+        width="100%"
+      ></iframe>
+    </div>
+
+    <div class="xueshengzuoping_part">
+      <div class="xueshengzuoping_header">
+        <div class="xueshengzuoping_title">
+          <div class="xueshengzuoping">学生作品</div>
+          <div class="background-picture">
+            <img
+              class="xueshengzuoping_title_picture"
+              src="images/山峰白底.svg"
+              alt="背景图片"
+            />
+          </div>
+        </div>
+        <div class="chakangengduo-annui">
+          <a class="chakangengduo-annui-2" href="#">查看更多></a>
+        </div>
+      </div>
+      <div class="xueshengzuoping-cards">
+        <img
+          class="xueshengzuoping-picture"
+          src="images/展示图片.svg"
+          alt="学生作品"
+        />
+        <img
+          class="xueshengzuoping-picture"
+          src="images/展示图片.svg"
+          alt="学生作品"
+        />
+        <img
+          class="xueshengzuoping-picture"
+          src="images/展示图片.svg"
+          alt="学生作品"
+        />
+        <img
+          class="xueshengzuoping-picture"
+          src="images/展示图片.svg"
+          alt="学生作品"
+        />
+      </div>
+    </div>
+    <div class="footer">
+      <div class="lianxifangshi">
+        <img class="footer-mail-picture" src="images/邮件.svg" alt="邮件图标" />
+        <p>
+          <strong>XXX@XX.com <br /></strong>
+          工作时间 周一至周五（9:00-17:00）
+        </p>
+      </div>
+      <div class="friend-links">
+        <div class="youqinglianjie">友情链接:</div>
+        <div class="friend-links-list">
+          <a class="friend-links-annui" href="#">友链名称1</a>
+          <a class="friend-links-annui" href="#">友链名称2</a>
+          <a class="friend-links-annui" href="#">友链名称3</a>
+          <a class="friend-links-annui" href="#">友链名称4</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
